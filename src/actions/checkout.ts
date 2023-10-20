@@ -12,11 +12,13 @@ export const createCheckout = async (products: CartProduct[]) => {
   const checkout = await stripe.checkout.sessions.create({
     payment_method_types: ["card"],
     mode: "payment",
-    success_url: "http://localhost:3000",
-    cancel_url: "http://localhost:3000",
-    metadata: {
-      products: JSON.stringify(products),
-    },
+    // success_url: "process.env.HOST_URL",
+    // cancel_url: "process.env.HOST_URL",
+    // success_url: "http://localhost:3000",
+    // cancel_url: "http://localhost:3000",
+    // metadata: {
+    //   products: JSON.stringify(products),
+    // },
     line_items: products.map((product) => {
       return {
         price_data: {
