@@ -75,25 +75,19 @@ const Cart = () => {
               <p>Descontos</p>
               <p>R$ {totalDiscount.toFixed(2)}</p>
             </div>
-          </>
-        )}
-        <Separator />
+            <Separator />
 
-        <div className="flex items-center justify-between text-sm font-bold">
-          <p>Total a pagar</p>
-          <p>R$ {total.toFixed(2)}</p>
-        </div>
-        {products.length > 0 ? (
-          <Button
-            className="mt-7 bg-secondary font-bold uppercase"
-            onClick={hendleFinishedPurchaseClick}
-          >
-            Finalizar compra
-          </Button>
-        ) : (
-          <Button className=" mt-7 font-bold uppercase">
-            Finalizar compra
-          </Button>
+            <div className="flex items-center justify-between text-sm font-bold">
+              <p>Total a pagar</p>
+              <p>R$ {total.toFixed(2)}</p>
+            </div>
+            <Button
+              className="mt-7 bg-secondary font-bold uppercase hover:bg-primary"
+              onClick={hendleFinishedPurchaseClick}
+            >
+              Finalizar compra
+            </Button>
+          </>
         )}
       </div>
     </div>
