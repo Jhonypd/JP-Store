@@ -14,8 +14,6 @@ export const createCheckout = async (products: CartProduct[]) => {
     mode: "payment",
     success_url: "https://jp-store.vercel.app",
     cancel_url: "https://jp-store.vercel.app",
-    // success_url: "http://localhost:3000",
-    // cancel_url: "http://localhost:3000",
     line_items: products.map((product) => {
       return {
         price_data: {
