@@ -10,7 +10,13 @@ import {
   HomeIcon,
   LogOutIcon,
 } from "lucide-react";
-import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTrigger } from "./sheet";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetHeader,
+  SheetTrigger,
+} from "./sheet";
 import { signIn, useSession, signOut } from "next-auth/react";
 import { Avatar } from "./avatar";
 import { AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
@@ -85,22 +91,35 @@ const Header = () => {
             </div>
 
             <SheetClose asChild>
-              <Link href={'/'}>
-                <Button variant="outline" className="w-full justify-start gap-2">
+              <Link href={"/"}>
+                <Button
+                  variant="outline"
+                  className="w-full justify-start gap-2"
+                >
                   <HomeIcon size={16} />
                   Início
                 </Button>
               </Link>
             </SheetClose>
 
-            <Button variant="outline" className="w-full justify-start gap-2">
-              <PercentIcon size={16} />
-              Ofertas
-            </Button>
+            <SheetClose asChild>
+              <Link href={"/deals"}>
+                <Button
+                  variant="outline"
+                  className="w-full justify-start gap-2"
+                >
+                  <PercentIcon size={16} />
+                  Ofertas
+                </Button>
+              </Link>
+            </SheetClose>
 
             <SheetClose asChild>
               <Link href={"/catalog"}>
-                <Button variant="outline" className="w-full justify-start gap-2">
+                <Button
+                  variant="outline"
+                  className="w-full justify-start gap-2"
+                >
                   <ListOrderedIcon size={16} />
                   Catálogo
                 </Button>
