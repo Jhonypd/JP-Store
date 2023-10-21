@@ -36,7 +36,9 @@ export const CartContext = createContext<ICartContext>({
 });
 const CartProvider = ({ children }: { children: ReactNode }) => {
   const [products, setProducts] = useState<CartProduct[]>(
-    JSON.parse(localStorage.getItem("@JP-Store/cart-products") || "[]"),
+    typeof window !== "undefined"
+      ? JSON.parse(localStorage.getItem("@JP-Store/cart-products") || "[]")
+      : [],
   );
 
   useEffect(() => {
@@ -46,7 +48,6 @@ const CartProvider = ({ children }: { children: ReactNode }) => {
   // total sem descontos
   const subtotal = useMemo(() => {
     return products.reduce((acc, product) => {
-      // return acc + Number(product.basePrice);
       return acc + Number(product.basePrice) * product.quantity;
     }, 0);
   }, [products]);
