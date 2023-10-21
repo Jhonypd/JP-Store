@@ -12,8 +12,8 @@ export const createCheckout = async (products: CartProduct[]) => {
   const checkout = await stripe.checkout.sessions.create({
     payment_method_types: ["card"],
     mode: "payment",
-    success_url: "https://jp-store.vercel.app",
-    cancel_url: "https://jp-store.vercel.app",
+    success_url: "https://jpstore.vercel.app",
+    cancel_url: "https://jpstore.vercel.app",
     line_items: products.map((product) => {
       return {
         price_data: {
