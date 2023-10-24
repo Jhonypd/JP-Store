@@ -9,6 +9,7 @@ import {
   ListOrderedIcon,
   HomeIcon,
   LogOutIcon,
+  ShoppingBag,
 } from "lucide-react";
 import {
   Sheet,
@@ -66,30 +67,6 @@ const Header = () => {
               </div>
             )}
 
-            <div className="mt-4 flex flex-col gap-2">
-              {status === "unauthenticated" && (
-                <Button
-                  onClick={handleLoginClick}
-                  variant="outline"
-                  className="w-full justify-start gap-2"
-                >
-                  <LogInIcon size={16} />
-                  Fazer Login
-                </Button>
-              )}
-
-              {status === "authenticated" && (
-                <Button
-                  onClick={handleLogoutClick}
-                  variant="outline"
-                  className="w-full justify-start gap-2"
-                >
-                  <LogOutIcon size={16} />
-                  Fazer Logout
-                </Button>
-              )}
-            </div>
-
             <SheetClose asChild>
               <Link href="/">
                 <Button
@@ -98,6 +75,18 @@ const Header = () => {
                 >
                   <HomeIcon size={16} />
                   Início
+                </Button>
+              </Link>
+            </SheetClose>
+
+            <SheetClose asChild>
+              <Link href="/orders">
+                <Button
+                  variant="outline"
+                  className="w-full justify-start gap-2"
+                >
+                  <ShoppingBag size={16} />
+                  Meus Pedidos
                 </Button>
               </Link>
             </SheetClose>
@@ -125,6 +114,29 @@ const Header = () => {
                 </Button>
               </Link>
             </SheetClose>
+            <div className="mt-4 flex flex-col gap-2">
+              {status === "unauthenticated" && (
+                <Button
+                  onClick={handleLoginClick}
+                  variant="outline"
+                  className="w-full justify-start gap-2"
+                >
+                  <LogInIcon size={16} />
+                  Fazer Login
+                </Button>
+              )}
+
+              {status === "authenticated" && (
+                <Button
+                  onClick={handleLogoutClick}
+                  variant="outline"
+                  className="w-full justify-start gap-2"
+                >
+                  <LogOutIcon size={16} />
+                  Fazer Logout
+                </Button>
+              )}
+            </div>
           </div>
         </SheetContent>
       </Sheet>
