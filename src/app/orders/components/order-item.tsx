@@ -7,11 +7,16 @@ import {
 import { format } from "date-fns";
 import { Card } from "@/components/ui/card";
 import { Order, Prisma } from "@prisma/client";
+import OrderProductItem from "./order-product-item";
 
 interface OrderItemProps {
   order: Prisma.OrderGetPayload<{
     include: {
-      orderProduct: true;
+      orderProduct: {
+        include: {
+          product: true;
+        };
+      };
     };
   }>;
 }
@@ -27,23 +32,31 @@ const OrderItem = ({ order }: OrderItemProps) => {
             </div>
           </AccordionTrigger>
           <AccordionContent>
-            <div className="flex items-center justify-between">
-              <div className="font-bold">
-                <p>Status</p>
-                <p className="text-secondary">{order.status}</p>
-              </div>
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center justify-between">
+                <div className="font-bold">
+                  <p>Status</p>
+                  <p className="text-secondary">{order.status}</p>
+                </div>
 
-              <div>
-                <p className="font-bold">Data</p>
-                <p className="opacity-60">
-                  {format(order.createdAt, "dd/MM/y")}
-                </p>
-              </div>
+                <div>
+                  <p className="font-bold">Data</p>
+                  <p className="opacity-60">
+                    {format(order.createdAt, "dd/MM/y")}
+                  </p>
+                </div>
 
-              <div>
-                <p className="font-bold">Pagamento</p>
-                <p className="opacity-60">Cartaão</p>
+                <div>
+                  <p className="font-bold">Pagamento</p>
+                  <p className="opacity-60">Cartaão</p>
+                </div>
               </div>
+              {order.orderProduct.map((orderProduct) => (
+                <OrderProductItem
+                  key={orderProduct.id}
+                  orderProduct={orderProduct}
+                />
+              ))}
             </div>
           </AccordionContent>
         </AccordionItem>

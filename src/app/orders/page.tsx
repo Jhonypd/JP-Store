@@ -13,7 +13,11 @@ async function OrderPage() {
       userId: (user as any).id,
     },
     include: {
-      orderProduct: true,
+      orderProduct: {
+        include: {
+          product: true,
+        },
+      },
     },
   });
 
