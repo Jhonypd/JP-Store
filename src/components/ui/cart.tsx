@@ -21,9 +21,9 @@ const Cart = () => {
       // TODO: redirecionar para o login
       return;
     }
-    await createOrder(products, (data?.user as any).id);
+    const order = await createOrder(products, (data?.user as any).id);
 
-    const checkout = await createCheckout(products);
+    const checkout = await createCheckout(products, order.id);
 
     const stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
 
