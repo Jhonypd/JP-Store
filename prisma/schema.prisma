@@ -29,6 +29,24 @@ model Product {
   categoryId         String
   discountPercentage Int            @default(0)
   OrderProduct       OrderProduct[]
+  CartProduct        CartProduct[]
+}
+
+model Cart {
+  id       String        @id @default(uuid())
+  userId   String
+  user     User          @relation(fields: [userId], references: [id])
+  products CartProduct[] // Para representar os produtos no carrinho
+}
+
+model CartProduct {
+  id        String  @id @default(uuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+  cartId    String
+  cart      Cart    @relation(fields: [cartId], references: [id])
+  quantity  Int
+  // Outros campos relacionados aos produtos no carrinho, se necessário
 }
 
 model Order {
@@ -93,6 +111,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   Order         Order[]
+  Cart          Cart[]
 }
 
 model VerificationToken {
