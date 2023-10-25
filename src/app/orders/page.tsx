@@ -21,9 +21,6 @@ async function OrderPage() {
     },
   });
 
-  if (!orders) {
-    return <Loading />;
-  }
   return (
     <div className="p-5">
       <Badge
@@ -33,7 +30,7 @@ async function OrderPage() {
         <ShoppingBagIcon size={16} />
         Meus Pedidos
       </Badge>
-      <div className="flex flex-col gap-5">
+      <div className="mt-5 flex flex-col gap-5">
         {orders.map((order) => (
           <OrderItem key={order.id} order={order} />
         ))}
