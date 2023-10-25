@@ -51,7 +51,7 @@ const OrderItem = ({ order }: OrderItemProps) => {
         <AccordionItem value={order.id}>
           <AccordionTrigger>
             <div className="flex flex-col gap-1 text-left">
-              <p>
+              <p className="font-bold uppercase">
                 Pedido #{order.id.slice(14, 18)} com {order.orderProduct.length}{" "}
                 produto(s)
               </p>

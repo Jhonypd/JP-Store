@@ -3,9 +3,16 @@ import { prismaClient } from "@/lib/prisma";
 import { ShoppingBagIcon } from "lucide-react";
 import { getServerSession } from "next-auth";
 import OrderItem from "./components/order-item";
+import Loading from "@/components/ui/loading";
+
+export const dynamic = "force-dynamic";
 
 async function OrderPage() {
   const user = getServerSession();
+
+  if (!user) {
+    return <Loading />;
+  }
 
   const orders = await prismaClient.order.findMany({
     where: {
