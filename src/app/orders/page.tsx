@@ -1,5 +1,4 @@
 import { Badge } from "@/components/ui/badge";
-import Loading from "@/components/ui/loading";
 import { prismaClient } from "@/lib/prisma";
 import { ShoppingBagIcon } from "lucide-react";
 import { getServerSession } from "next-auth";

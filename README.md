@@ -10,7 +10,7 @@ Welcome to the Full Stack JP Store, a cutting-edge e-commerce platform developed
 
 - **Next Auth**: A user authentication library using OAuth.
 
-- **Postgres**: A relational database management system.
+- **Postgres - supabase**: A relational database management system.
 
 - **Prisma**: An Object-Relational Mapping (ORM) tool for Node.js and TypeScript.
 
@@ -32,9 +32,7 @@ Welcome to the Full Stack JP Store, a cutting-edge e-commerce platform developed
 
 - **Secure Payment with Stripe API**: We offer a secure online payment experience through the Stripe API integration, complete with webhooks for processing payment-related events. Users can easily and safely complete their orders.
 
-
 ### In Portuguese / Em português
-
 
 # Projeto Full Stack JP Store 💻
 
