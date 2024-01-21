@@ -17,7 +17,7 @@ interface ICartContext {
   totalDiscount: number;
   addProductToCart: (product: CartProduct) => void;
   decreaseProductQuantity: (productId: string) => void;
-  incriaseProductQunatity: (productId: string) => void;
+  increaseProductQuantity: (productId: string) => void;
   removeProductFromCart: (productId: string) => void;
 }
 
@@ -31,41 +31,41 @@ export const CartContext = createContext<ICartContext>({
   totalDiscount: 0,
   addProductToCart: () => {},
   decreaseProductQuantity: () => {},
-  incriaseProductQunatity: () => {},
+  increaseProductQuantity: () => {},
   removeProductFromCart: () => {},
 });
+
 const CartProvider = ({ children }: { children: ReactNode }) => {
-  const [products, setProducts] = useState<CartProduct[]>(
-    typeof window !== "undefined"
-      ? JSON.parse(localStorage.getItem("@JP-Store/cart-products") || "[]")
-      : [],
-  );
+  const [products, setProducts] = useState<CartProduct[]>([]);
 
   useEffect(() => {
-    localStorage.setItem("@JP-Store/cart-products", JSON.stringify(products));
+    setProducts(
+      JSON.parse(localStorage.getItem("@fsw-store/cart-products") || "[]"),
+    );
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("@fsw-store/cart-products", JSON.stringify(products));
   }, [products]);
 
-  // total sem descontos
+  // Total sem descontos
   const subtotal = useMemo(() => {
     return products.reduce((acc, product) => {
-      return acc + Number(product.basePrice) * product.quantity;
+      return acc + Number(product.basePrice.toNumber()) * product.quantity;
     }, 0);
   }, [products]);
 
-  //  total com descontos
+  // Total com descontos
   const total = useMemo(() => {
     return products.reduce((acc, product) => {
-      // return acc + Number(product.totalPrice);
-      return acc + Number(product.totalPrice) * product.quantity;
+      return acc + product.totalPrice * product.quantity;
     }, 0);
   }, [products]);
 
-  // total a pagar
-  const totalDiscount = total - subtotal;
+  const totalDiscount = subtotal - total;
 
   const addProductToCart = (product: CartProduct) => {
     // se o produto já estiver no carrinho, apenas aumente a sua quantidade
-
     const productIsAlreadyOnCart = products.some(
       (cartProduct) => cartProduct.id === product.id,
     );
@@ -79,9 +79,11 @@ const CartProvider = ({ children }: { children: ReactNode }) => {
               quantity: cartProduct.quantity + product.quantity,
             };
           }
+
           return cartProduct;
         }),
       );
+
       return;
     }
 
@@ -99,13 +101,14 @@ const CartProvider = ({ children }: { children: ReactNode }) => {
               quantity: cartProduct.quantity - 1,
             };
           }
+
           return cartProduct;
         })
         .filter((cartProduct) => cartProduct.quantity > 0),
     );
   };
 
-  const incriaseProductQunatity = (productId: string) => {
+  const increaseProductQuantity = (productId: string) => {
     setProducts((prev) =>
       prev.map((cartProduct) => {
         if (cartProduct.id === productId) {
@@ -114,6 +117,7 @@ const CartProvider = ({ children }: { children: ReactNode }) => {
             quantity: cartProduct.quantity + 1,
           };
         }
+
         return cartProduct;
       }),
     );
@@ -131,10 +135,10 @@ const CartProvider = ({ children }: { children: ReactNode }) => {
         products,
         addProductToCart,
         decreaseProductQuantity,
-        incriaseProductQunatity,
+        increaseProductQuantity,
         removeProductFromCart,
-        subtotal,
         total,
+        subtotal,
         totalDiscount,
         cartTotalPrice: 0,
         cartBasePrice: 0,

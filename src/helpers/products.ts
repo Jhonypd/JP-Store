@@ -10,15 +10,15 @@ export const computeProductTotalPrice = (
   if (product.discountPercentage === 0) {
     return {
       ...product,
-      totalPrice: Number(product.basePrice),
+      totalPrice: Number(product.basePrice.toNumber()),
     };
   }
 
   const totalDiscount =
-    Number(product.basePrice) * (product.discountPercentage / 100);
+    Number(product.basePrice.toNumber()) * (product.discountPercentage / 100);
 
   return {
     ...product,
-    totalPrice: Number(product.basePrice) - totalDiscount,
+    totalPrice: Number(product.basePrice.toNumber()) - totalDiscount,
   };
 };

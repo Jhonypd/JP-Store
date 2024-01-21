@@ -6,41 +6,48 @@ import ProductList from "@/components/ui/product-horizontal-list";
 import SectionTitle from "@/components/ui/section-title";
 
 interface ProductDetailsPageProps {
-    params: {
-        slug: string
-    }
+  params: {
+    slug: string;
+  };
 }
-const ProductDetailsPage = async ({ params: { slug }, }: ProductDetailsPageProps) => {
-    const product = await prismaClient.product.findFirst({
-        where: {
-            slug: slug
-        },
+const ProductDetailsPage = async ({
+  params: { slug },
+}: ProductDetailsPageProps) => {
+  const product = await prismaClient.product.findFirst({
+    where: {
+      slug: slug,
+    },
+    include: {
+      category: {
         include: {
-            category: {
-                include: {
-                    products: {
-                        where: {
-                            slug: {
-                                not: slug
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    })
-    if (!product) return null
+          products: {
+            where: {
+              slug: {
+                not: slug,
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+  if (!product) {
     return (
-        <div className="flex flex-col gap-8">
-            <ProductImages name={product.name} imagesUrls={product.imageUrls} />
-            <ProductInfo product={computeProductTotalPrice(product)} />
-            <div>
-                <SectionTitle>Produtos Recomendados</SectionTitle>
-                <ProductList products={product.category.products} />
-            </div>
-        </div>
-
+      <div className="flex flex-col">
+        <p>Produto não encontrado</p>
+      </div>
     );
-}
+  }
+  return (
+    <div className="flex flex-col gap-8">
+      <ProductImages name={product.name} imagesUrls={product.imageUrls} />
+      <ProductInfo product={computeProductTotalPrice(product)} />
+      <div>
+        <SectionTitle>Produtos Recomendados</SectionTitle>
+        <ProductList products={product.category.products} />
+      </div>
+    </div>
+  );
+};
 
 export default ProductDetailsPage;

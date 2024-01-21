@@ -32,7 +32,7 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
 
       <div className="flex items-center gap-2">
         <h1 className="text-xl font-bold">
-          R$ {product.totalPrice.toFixed(2)}
+          R$ {Number(product.totalPrice).toFixed(2)}
         </h1>
 
         {product.discountPercentage > 0 && (
@@ -71,12 +71,12 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
 
       <Button
         onClick={handleAddToCartClick}
-        className="mt-8 bg-secondary font-bold uppercase hover:bg-primary"
+        className="mt-8 bg-secondary font-bold uppercase hover:bg-primary md:max-w-[280px]"
       >
         Adicionar ao carrinho
       </Button>
 
-      <div className="mt-5 flex items-center justify-between rounded-lg bg-accent px-5 py-2">
+      <div className="mt-5 flex items-center justify-between rounded-lg bg-accent px-5 py-2 md:max-w-[350px]">
         <div className="flex items-center gap-3">
           <TruckIcon />
           <div className="flex flex-col">

@@ -37,6 +37,7 @@ model Cart {
   userId   String
   user     User          @relation(fields: [userId], references: [id])
   products CartProduct[] // Para representar os produtos no carrinho
+  UserCart UserCart?
 }
 
 model CartProduct {
@@ -47,6 +48,14 @@ model CartProduct {
   cart      Cart    @relation(fields: [cartId], references: [id])
   quantity  Int
   // Outros campos relacionados aos produtos no carrinho, se necessário
+}
+
+model UserCart {
+  id     String @id @default(uuid())
+  userId String
+  cartId String @unique
+  user   User   @relation(fields: [userId], references: [id])
+  cart   Cart   @relation(fields: [cartId], references: [id])
 }
 
 model Order {
@@ -103,15 +112,16 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String     @id @default(cuid())
   name          String?
-  email         String?   @unique
+  email         String?    @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
   Order         Order[]
   Cart          Cart[]
+  UserCart      UserCart[]
 }
 
 model VerificationToken {
