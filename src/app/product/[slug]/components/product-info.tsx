@@ -69,26 +69,28 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
         <p className="text-justify text-sm opacity-60">{product.description}</p>
       </div>
 
-      <Button
-        onClick={handleAddToCartClick}
-        className="mt-8 bg-secondary font-bold uppercase hover:bg-primary md:max-w-[280px]"
-      >
-        Adicionar ao carrinho
-      </Button>
+      <div className="flex flex-col md:mt-5 md:flex-row md:items-center md:justify-around">
+        <Button
+          onClick={handleAddToCartClick}
+          className="mt-8 bg-secondary font-bold uppercase hover:bg-primary md:max-w-[280px]"
+        >
+          Adicionar ao carrinho
+        </Button>
 
-      <div className="mt-5 flex items-center justify-between rounded-lg bg-accent px-5 py-2 md:max-w-[350px]">
-        <div className="flex items-center gap-3">
-          <TruckIcon />
-          <div className="flex flex-col">
-            <p className="text-xs">
-              Entrega via <span className="font-bold">JPpacket &reg;</span>
-            </p>
-            <p className="text-xs text-secondary">
-              Envio para <span className="font-bold">todo Brasil</span>
-            </p>
+        <div className="mt-5 flex items-center justify-between rounded-lg bg-accent px-5 py-2 md:max-w-[350px]">
+          <div className="flex items-center  gap-3">
+            <TruckIcon />
+            <div className="flex flex-col">
+              <p className="text-xs">
+                Entrega via <span className="font-bold">JPpacket &reg;</span>
+              </p>
+              <p className="text-xs text-secondary">
+                Envio para <span className="font-bold">todo Brasil</span>
+              </p>
+            </div>
           </div>
+          <p className="text-xs font-bold">Frete grátis</p>
         </div>
-        <p className="text-xs font-bold">Frete grátis</p>
       </div>
     </div>
   );

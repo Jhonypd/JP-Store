@@ -9,6 +9,10 @@ interface ProductImagesProps {
 
 const ProductImages = ({ imagesUrls, name }: ProductImagesProps) => {
   const [currentImage, setCurrentImage] = useState(imagesUrls[0]);
+
+  const handleImageClick = (imageUrl: string) => {
+    setCurrentImage(imageUrl);
+  };
   return (
     <div className="flex flex-col">
       <div className="flex h-[380px] w-full items-center justify-center bg-accent">
@@ -35,7 +39,7 @@ const ProductImages = ({ imagesUrls, name }: ProductImagesProps) => {
                           "border-2 border-solid border-primary"
                         }
                         `}
-            onClick={() => setCurrentImage(imageUrl)}
+            onClick={() => handleImageClick(imageUrl)}
           >
             <Image
               src={imageUrl}

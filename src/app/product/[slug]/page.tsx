@@ -31,13 +31,8 @@ const ProductDetailsPage = async ({
       },
     },
   });
-  if (!product) {
-    return (
-      <div className="flex flex-col">
-        <p>Produto não encontrado</p>
-      </div>
-    );
-  }
+  if (!product) return null;
+
   return (
     <div className="flex flex-col gap-8">
       <ProductImages name={product.name} imagesUrls={product.imageUrls} />
