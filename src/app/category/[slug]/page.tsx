@@ -31,10 +31,7 @@ const CategoryProduct = async ({ params }: any) => {
         {category.products.map((product) => (
           <ProductItem
             key={product.id}
-            product={{
-              ...product,
-              totalPrice: computeProductTotalPrice(product),
-            }}
+            product={computeProductTotalPrice(product)}
           />
         ))}
       </div>
