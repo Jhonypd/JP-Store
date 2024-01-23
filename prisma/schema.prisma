@@ -123,6 +123,7 @@ model User {
   Order         Order[]
   Cart          Cart[]
   UserCart      UserCart[]
+  userAdm       userAdm[]
 }
 
 model VerificationToken {
@@ -131,4 +132,11 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model userAdm {
+  id         String @id @default(cuid())
+  permission String
+  userId     String
+  user       User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

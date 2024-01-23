@@ -4,9 +4,7 @@ import { ShapesIcon } from "lucide-react";
 import CategoryItem from "./components/category-item";
 
 const CatalogPage = async () => {
-  const categries = await prismaClient.category.findMany({
-    distinct: ["name"],
-  });
+  const categries = await prismaClient.category.findMany({});
   return (
     <div className="flex flex-col gap-8 p-5">
       <Badge

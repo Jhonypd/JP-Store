@@ -6,7 +6,6 @@ import { prismaClient } from "@/lib/prisma";
 
 const CategoryProduct = async ({ params }: any) => {
   const category = await prismaClient.category.findFirst({
-    distinct: ["slug"],
     where: {
       slug: params.slug,
     },
