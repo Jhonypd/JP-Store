@@ -6,6 +6,7 @@ import PromoBanner from "./components/promo-banner";
 
 export default async function Home() {
   const deals = await prismaClient.product.findMany({
+    distinct: ["name"],
     where: {
       discountPercentage: {
         gt: 0,
@@ -13,6 +14,7 @@ export default async function Home() {
     },
   });
   const keyboards = await prismaClient.product.findMany({
+    distinct: ["name"],
     where: {
       category: {
         slug: "keyboards",
@@ -21,6 +23,7 @@ export default async function Home() {
   });
 
   const mouses = await prismaClient.product.findMany({
+    distinct: ["name"],
     where: {
       category: {
         slug: "mouses",
