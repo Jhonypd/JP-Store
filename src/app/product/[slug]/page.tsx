@@ -31,6 +31,7 @@ const ProductDetailsPage = async ({
       },
     },
   });
+
   if (!product) return null;
 
   return (

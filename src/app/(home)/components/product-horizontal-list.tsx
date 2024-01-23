@@ -8,9 +8,12 @@ interface ProductListProps {
 
 const ProductList = ({ products }: ProductListProps) => {
   return (
-    <div className="[&::-webkit-scrollbar]:hidden flex w-full gap-4 overflow-x-auto px-5">
+    <div className="flex w-full gap-4 overflow-x-auto px-5 [&::-webkit-scrollbar]:hidden">
       {products.map((product) => (
-        <ProductItem key={product.id} product={computeProductTotalPrice(product)} />
+        <ProductItem
+          key={product.id}
+          product={computeProductTotalPrice(product)}
+        />
       ))}
     </div>
   );

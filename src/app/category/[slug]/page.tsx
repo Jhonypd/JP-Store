@@ -6,6 +6,7 @@ import { prismaClient } from "@/lib/prisma";
 
 const CategoryProduct = async ({ params }: any) => {
   const category = await prismaClient.category.findFirst({
+    distinct: ["slug"],
     where: {
       slug: params.slug,
     },
@@ -17,8 +18,9 @@ const CategoryProduct = async ({ params }: any) => {
   if (!category) {
     return null;
   }
+
   return (
-    <div className="mx-auto flex flex-col gap-8 p-5 lg:container lg:gap-10 lg:py-10">
+    <div className="flex flex-col gap-8 p-5">
       <Badge
         className="w-fit gap-1 border-primary px-3 py-[0.375rem] text-base uppercase"
         variant="outline"
@@ -27,7 +29,7 @@ const CategoryProduct = async ({ params }: any) => {
         {category.name}
       </Badge>
 
-      <div className="grid grid-cols-2 gap-8 lg:grid-cols-6">
+      <div className="grid grid-cols-2 gap-8">
         {category.products.map((product) => (
           <ProductItem
             key={product.id}
