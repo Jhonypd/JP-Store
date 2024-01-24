@@ -51,7 +51,7 @@ const CartProvider = ({ children }: { children: ReactNode }) => {
   // Total sem descontos
   const subtotal = useMemo(() => {
     return products.reduce((acc, product) => {
-      return acc + Number(product.basePrice.toNumber()) * product.quantity;
+      return acc + Number(product.basePrice) * product.quantity;
     }, 0);
   }, [products]);
 
