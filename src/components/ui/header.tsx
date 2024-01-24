@@ -24,9 +24,14 @@ import { AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { Separator } from "./separator";
 import Link from "next/link";
 import Cart from "./cart";
+import CounterItemBadge from "./count-item-badge";
+import { CartContext } from "@/providers/cart";
+import { useContext } from "react";
 
 const Header = () => {
   const { status, data } = useSession();
+
+  const { products } = useContext(CartContext);
 
   const handleLoginClick = async () => {
     await signIn();
@@ -149,6 +154,11 @@ const Header = () => {
       <Sheet>
         <SheetTrigger asChild>
           <Button size="icon" variant="outline">
+            {products.length > 0 && (
+              <CounterItemBadge className="absolute right-5 top-6">
+                {products.length}
+              </CounterItemBadge>
+            )}
             <ShoppingCartIcon />
           </Button>
         </SheetTrigger>
