@@ -1,9 +1,10 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import DiscountBadge from "@/components/ui/discount-badge";
+import { toast } from "sonner";
 import { ProductWithTotalPrice } from "@/helpers/products";
 import { CartContext } from "@/providers/cart";
-import { ArrowLeft, ArrowRight, TruckIcon } from "lucide-react";
+import { ArrowLeft, ArrowRight, TruckIcon, Check } from "lucide-react";
 import { useContext, useState } from "react";
 
 interface ProductInfoProps {
@@ -71,10 +72,25 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
 
       <div className="flex flex-col md:mt-5 md:flex-row md:items-center md:justify-around">
         <Button
-          onClick={handleAddToCartClick}
           className="mt-8 bg-secondary font-bold uppercase hover:bg-primary md:max-w-[280px]"
+          onClick={() =>
+            toast("Adicionado ao carrinho!", {
+              position: "top-center",
+              className: "bg-secondary text-white",
+              description: `${product.name}`,
+              action: {
+                label: "X",
+                onClick: () => console.log(`${product.name}`),
+              },
+            })
+          }
         >
-          Adicionar ao carrinho
+          <Button
+            className="bg-transparent font-bold uppercase"
+            onClick={handleAddToCartClick}
+          >
+            Adicionar ao carrinho
+          </Button>
         </Button>
 
         <div className="mt-5 flex items-center justify-between rounded-lg bg-accent px-5 py-2 md:max-w-[350px]">
