@@ -19,12 +19,22 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
   const handleDecreaseQuantityClick = () => {
     setQuantity((prev) => (prev === 1 ? prev : prev - 1));
   };
+
   const handleIncreaseQuantityClick = () => {
     setQuantity((prev) => prev + 1);
   };
 
-  const handleAddToCartClick = () => {
-    addProductToCart({ ...product, quantity });
+  const handleAddToCartClick = async () => {
+    try {
+      addProductToCart({ ...product, quantity });
+
+      toast("Item adicionado com sucesso!", {
+        className: "bg-secondary text-white",
+        description: `${product.name} adicionado.`,
+      });
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -51,7 +61,9 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
           variant={"outline"}
           onClick={handleDecreaseQuantityClick}
         >
-          <ArrowLeft />
+          <>
+            <ArrowLeft />
+          </>
         </Button>
 
         <span>{quantity}</span>
@@ -61,7 +73,9 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
           variant={"outline"}
           onClick={handleIncreaseQuantityClick}
         >
-          <ArrowRight />
+          <>
+            <ArrowRight />
+          </>
         </Button>
       </div>
 
@@ -72,25 +86,10 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
 
       <div className="flex flex-col md:mt-5 md:flex-row md:items-center md:justify-around">
         <Button
+          onClick={handleAddToCartClick}
           className="mt-8 bg-secondary font-bold uppercase hover:bg-primary md:max-w-[280px]"
-          onClick={() =>
-            toast("Adicionado ao carrinho!", {
-              position: "top-center",
-              className: "bg-secondary text-white",
-              description: `${product.name}`,
-              action: {
-                label: "X",
-                onClick: () => console.log(`${product.name}`),
-              },
-            })
-          }
         >
-          <Button
-            className="bg-transparent font-bold uppercase"
-            onClick={handleAddToCartClick}
-          >
-            Adicionar ao carrinho
-          </Button>
+          Adicionar ao carrinho
         </Button>
 
         <div className="mt-5 flex items-center justify-between rounded-lg bg-accent px-5 py-2 md:max-w-[350px]">

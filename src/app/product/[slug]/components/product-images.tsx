@@ -26,6 +26,7 @@ const ProductImages = ({ imagesUrls, name }: ProductImagesProps) => {
           style={{
             objectFit: "contain",
           }}
+          priority={true}
         />
       </div>
 

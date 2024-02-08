@@ -24,6 +24,7 @@ const ProductItem = ({ product, className }: ProductItemProps) => {
             height={0}
             width={0}
             sizes="100vw"
+            priority={true}
             style={{
               objectFit: "contain",
             }}

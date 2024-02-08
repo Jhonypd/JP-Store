@@ -155,7 +155,7 @@ const Header = () => {
         <SheetTrigger asChild>
           <Button size="icon" variant="outline">
             {products.length > 0 && (
-              <CounterItemBadge className="absolute right-5 top-6">
+              <CounterItemBadge className="absolute right-6 top-6 flex items-center justify-center font-bold">
                 {products.length}
               </CounterItemBadge>
             )}
