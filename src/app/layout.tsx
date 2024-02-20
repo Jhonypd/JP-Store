@@ -28,7 +28,7 @@ export default function RootLayout({
             <CartProvider>
               <Header />
               <div className="flex-1">{children}</div>
-              <Toaster className="bg-secondary text-white" />
+              <Toaster />
               <Footer />
             </CartProvider>
           </AuthProvider>

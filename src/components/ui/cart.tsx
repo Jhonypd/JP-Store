@@ -1,6 +1,6 @@
-import { ShoppingCartIcon } from "lucide-react";
+import { ShoppingCartIcon, Loader2 } from "lucide-react";
 import { Badge } from "./badge";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { CartContext } from "@/providers/cart";
 import CartItem from "./cart-item";
 import { computeProductTotalPrice } from "@/helpers/products";
@@ -10,26 +10,50 @@ import { Button } from "./button";
 import { createCheckout } from "@/actions/checkout";
 import { loadStripe } from "@stripe/stripe-js";
 import { createOrder } from "@/actions/order";
-import { useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
+import { toast } from "sonner";
 
 const Cart = () => {
   const { data } = useSession();
   const { products, total, subtotal, totalDiscount } = useContext(CartContext);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSignInClick = async () => {
+    await signIn();
+  };
 
   const hendleFinishedPurchaseClick = async () => {
-    if (!data?.user) {
-      // TODO: redirecionar para o login
-      return;
+    try {
+      setIsLoading(true);
+      if (!data?.user) {
+        // TODO: redirecionar para o login
+        toast("Faça login para continuar!", {
+          description: "não foi possivel atender sua solicitação.",
+        });
+
+        setTimeout(()=>{
+          handleSignInClick()
+        }, 2000)
+        
+        return;
+      }
+
+      const order = await createOrder(products, (data?.user as any).id);
+
+      const checkout = await createCheckout(products, order.id);
+
+      const stripe = await loadStripe(
+        process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY,
+      );
+
+      stripe?.redirectToCheckout({
+        sessionId: checkout.id,
+      });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
     }
-    const order = await createOrder(products, (data?.user as any).id);
-
-    const checkout = await createCheckout(products, order.id);
-
-    const stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
-
-    stripe?.redirectToCheckout({
-      sessionId: checkout.id,
-    });
   };
 
   return (
@@ -93,6 +117,7 @@ const Cart = () => {
               className="mt-7 bg-secondary font-bold uppercase hover:bg-primary"
               onClick={hendleFinishedPurchaseClick}
             >
+              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Finalizar compra
             </Button>
           </>

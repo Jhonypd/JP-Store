@@ -29,7 +29,6 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
       addProductToCart({ ...product, quantity });
 
       toast("Item adicionado com sucesso!", {
-        className: "bg-secondary text-white",
         description: `${product.name} adicionado.`,
       });
     } catch (error) {
