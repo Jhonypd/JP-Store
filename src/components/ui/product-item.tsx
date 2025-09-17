@@ -17,23 +17,42 @@ const ProductItem = ({ product, className }: ProductItemProps) => {
     >
       <div className="flex flex-col gap-4">
         <div className="relative flex h-[170px] w-full items-center justify-center rounded-lg bg-accent">
-          <Image
-            className="h-auto max-h-[70%] w-auto max-w-[80%]"
-            src={product.imageUrls[0]}
-            alt={product.name}
-            height={0}
-            width={0}
-            sizes="100vw"
-            priority={true}
-            style={{
-              objectFit: "contain",
-            }}
-          />
-          {product.discountPercentage > 0 && (
-            <DiscountBadge className="absolute left-3 top-3">
-              {product.discountPercentage}
-            </DiscountBadge>
-          )}
+
+                   
+          {product.imageUrls.length === 0 ? (
+  <div className="flex justify-center items-center h-full">
+    <div className="w-24 h-24 rounded-full bg-gray-300 flex items-center justify-center">
+      <span className="text-xl font-semibold text-gray-700">
+        {product.name
+          .split(' ')
+          .map(word => word.charAt(0))
+          .join('')
+          .toUpperCase()
+          .substring(0, 3)}
+      </span>
+    </div>
+  </div>
+) : (
+  <>
+    <Image
+      className="h-auto max-h-[70%] w-auto max-w-[80%]"
+      src={product.imageUrls[0]}
+      alt={product.name}
+      height={0}
+      width={0}
+      sizes="100vw"
+      priority={true}
+      style={{
+        objectFit: "contain",
+      }}
+    />
+    {product.discountPercentage > 0 && (
+      <DiscountBadge className="absolute left-3 top-3">
+        {product.discountPercentage}
+      </DiscountBadge>
+    )}
+  </>
+)}
         </div>
         <div className="flex flex-col gap-1">
           <p className="overflow-hidden text-ellipsis whitespace-nowrap text-sm ">
