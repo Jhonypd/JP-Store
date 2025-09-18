@@ -10,6 +10,7 @@ interface ProductDetailsPageProps {
     slug: string;
   };
 }
+
 const ProductDetailsPage = async ({
   params: { slug },
 }: ProductDetailsPageProps) => {
@@ -36,7 +37,11 @@ const ProductDetailsPage = async ({
 
   return (
     <div className="flex flex-col gap-8">
-      <ProductImages name={product.name} imagesUrls={product.imageUrls} />
+      <ProductImages
+        name={product.name}
+        imagesUrls={product.imageUrls}
+        imageArrayBytes={product.imageArrayBytes as any}
+      />
       <ProductInfo product={computeProductTotalPrice(product)} />
       <div>
         <SectionTitle>Produtos Recomendados</SectionTitle>

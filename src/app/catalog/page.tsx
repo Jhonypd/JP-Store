@@ -4,7 +4,7 @@ import { ShapesIcon } from "lucide-react";
 import CategoryItem from "./components/category-item";
 
 const CatalogPage = async () => {
-  const categries = await prismaClient.category.findMany({});
+  const categories = await prismaClient.category.findMany({});
   return (
     <div className="flex flex-col gap-8 p-5">
       <Badge
@@ -16,7 +16,7 @@ const CatalogPage = async () => {
       </Badge>
 
       <div className="grid grid-cols-2 gap-8">
-        {categries.map((category) => (
+        {categories.map((category) => (
           <CategoryItem key={category.id} category={category} />
         ))}
       </div>

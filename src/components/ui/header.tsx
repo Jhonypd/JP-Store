@@ -10,6 +10,7 @@ import {
   HomeIcon,
   LogOutIcon,
   ShoppingBag,
+  StoreIcon,
 } from "lucide-react";
 import {
   Sheet,
@@ -32,10 +33,6 @@ const Header = () => {
   const { status, data } = useSession();
 
   const { products } = useContext(CartContext);
-
-  const handleLoginClick = async () => {
-    await signIn();
-  };
 
   const handleLogoutClick = async () => {
     await signOut();
@@ -64,7 +61,7 @@ const Header = () => {
                     {data.user.image && <AvatarImage src={data.user.image} />}
                   </Avatar>
                   <div className="flex flex-col">
-                    <p className="font-midium">{data.user.name}</p>
+                    <p className="font-medium">{data.user.name}</p>
                     <p className="text-sm opacity-75">Boas compras!</p>
                   </div>
                 </div>
@@ -121,16 +118,33 @@ const Header = () => {
                 </Button>
               </Link>
             </SheetClose>
-            <div className="mt-4 flex flex-col gap-2">
-              {status === "unauthenticated" && (
+
+            <SheetClose asChild>
+              <Link href="/admin">
                 <Button
-                  onClick={handleLoginClick}
                   variant="outline"
                   className="w-full justify-start gap-2"
                 >
-                  <LogInIcon size={16} />
-                  Fazer Login
+                  <StoreIcon size={16} />
+                  Minha Loja
                 </Button>
+              </Link>
+            </SheetClose>
+
+            <div className="mt-4 flex flex-col gap-2">
+              {status === "unauthenticated" && (
+                <SheetClose asChild>
+                  <Link href={"/login"}>
+                    <Button
+                      // onClick={handleLoginClick}
+                      variant="outline"
+                      className="w-full justify-start gap-2"
+                    >
+                      <LogInIcon size={16} />
+                      Fazer Login
+                    </Button>
+                  </Link>
+                </SheetClose>
               )}
 
               {status === "authenticated" && (

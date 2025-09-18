@@ -1,14 +1,10 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model Category {
@@ -26,51 +22,47 @@ model Product {
   description        String
   basePrice          Decimal        @db.Decimal(8, 2)
   imageUrls          String[]
-  category           Category       @relation(fields: [categoryId], references: [id])
   categoryId         String
   discountPercentage Int            @default(0)
+  imageArrayBytes    Bytes[]
   OrderProduct       OrderProduct[]
+  category           Category       @relation(fields: [categoryId], references: [id])
 }
 
 model Cart {
-  id       String     @id @default(uuid())
+  id       String    @id @default(uuid())
   userId   String
-  user     User       @relation(fields: [userId], references: [id])
-  UserCart UserCart[]
+  user     User      @relation(fields: [userId], references: [id])
+  UserCart UserCart?
 }
 
 model UserCart {
   id     String @id @default(uuid())
   userId String
   cartId String @unique
-  user   User   @relation(fields: [userId], references: [id])
   Cart   Cart   @relation(fields: [cartId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
 }
 
 model Order {
   id           String         @id @default(uuid())
   userId       String
-  user         User           @relation(fields: [userId], references: [id])
-  orderProduct OrderProduct[]
   createdAt    DateTime       @default(now())
   upadtedAt    DateTime       @default(now()) @updatedAt
   status       OrderStatus    @default(WAITTING_FOR_PAYMENT)
-}
-
-enum OrderStatus {
-  WAITTING_FOR_PAYMENT
-  PAYMENT_CONFINRMED
+  user         User           @relation(fields: [userId], references: [id])
+  orderProduct OrderProduct[]
 }
 
 model OrderProduct {
   id                 String  @id @default(uuid())
   productId          String
-  product            Product @relation(fields: [productId], references: [id])
   orderId            String
-  order              Order   @relation(fields: [orderId], references: [id])
   basePrice          Decimal @db.Decimal(8, 2)
   discountPercentage Int     @default(0)
   quantity           Int
+  order              Order   @relation(fields: [orderId], references: [id])
+  product            Product @relation(fields: [productId], references: [id])
 }
 
 model Account {
@@ -79,15 +71,14 @@ model Account {
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?
   session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -107,11 +98,11 @@ model User {
   emailVerified DateTime?
   image         String?
   accounts      Account[]
-  sessions      Session[]
+  Cart          Cart[]
   Order         Order[]
+  sessions      Session[]
   UserCart      UserCart[]
   userAdm       userAdm[]
-  Cart          Cart[]
 }
 
 model VerificationToken {
@@ -127,4 +118,9 @@ model userAdm {
   permission String
   userId     String
   user       User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum OrderStatus {
+  WAITTING_FOR_PAYMENT
+  PAYMENT_CONFINRMED
 }
