@@ -3,7 +3,7 @@ import ProductItem from "@/components/ui/product-item";
 import { computeProductTotalPrice } from "@/helpers/products";
 import { prismaClient } from "@/lib/prisma";
 import { PercentIcon } from "lucide-react";
-
+export const dynamic = "force-dynamic";
 const DealsPage = async () => {
   const deals = await prismaClient.product.findMany({
     where: {

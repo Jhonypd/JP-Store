@@ -5,7 +5,7 @@ import { ptBR } from "date-fns/locale";
 import { Badge } from "@/components/ui/badge";
 import { prismaClient } from "@/lib/prisma";
 import ProductCategoriesAccordion from "../components/product-categories-accordion";
-
+export const dynamic = "force-dynamic";
 const ProductDetailsPage = async () => {
   const categories = await prismaClient.category.findMany({
     include: {
