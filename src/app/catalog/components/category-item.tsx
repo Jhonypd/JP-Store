@@ -1,7 +1,4 @@
-import {
-  CATEGORY_ICON,
-  CATEGORY_ICON_CATALOG,
-} from "@/constants/category-icons";
+import { CATEGORY_ICON_CATALOG } from "@/constants/category-icons";
 import { Category } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
@@ -30,7 +27,7 @@ const CategoryItem = ({ category }: CategoryItemProps) => {
             <span className="text-lg font-semibold text-gray-900">
               {
                 CATEGORY_ICON_CATALOG[
-                  category.slug as keyof typeof CATEGORY_ICON
+                  category.slug as keyof typeof CATEGORY_ICON_CATALOG
                 ]
               }
             </span>
