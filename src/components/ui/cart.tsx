@@ -22,19 +22,19 @@ const Cart = () => {
     await signIn();
   };
 
-  const hendleFinishedPurchaseClick = async () => {
+  const handleFinishedPurchaseClick = async () => {
     try {
       setIsLoading(true);
       if (!data?.user) {
         // TODO: redirecionar para o login
         toast("Faça login para continuar!", {
-          description: "não foi possivel atender sua solicitação.",
+          description: "não foi possível atender sua solicitação.",
         });
 
-        setTimeout(()=>{
-          handleSignInClick()
-        }, 2000)
-        
+        setTimeout(() => {
+          handleSignInClick();
+        }, 2000);
+
         return;
       }
 
@@ -115,7 +115,7 @@ const Cart = () => {
             </div>
             <Button
               className="mt-7 bg-secondary font-bold uppercase hover:bg-primary"
-              onClick={hendleFinishedPurchaseClick}
+              onClick={handleFinishedPurchaseClick}
             >
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Finalizar compra

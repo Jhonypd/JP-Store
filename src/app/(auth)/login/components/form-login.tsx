@@ -59,7 +59,7 @@ export function LoginForm({
             <h1 className="text-xl font-bold">Bem-vindo a JP Store.</h1>
           </div>
           <div className="flex flex-col gap-6">
-            <div className="grid gap-3">
+            {/* <div className="grid gap-3">
               <Label htmlFor="email">Email</Label>
               <Input
                 onChange={handleChange}
@@ -69,15 +69,15 @@ export function LoginForm({
                 placeholder="m@example.com"
                 required
               />
-            </div>
-            <Button variant={"secondary"} type="submit" className="w-full">
+            </div> */}
+            {/* <Button variant={"secondary"} type="submit" className="w-full">
               Login
-            </Button>
+            </Button> */}
           </div>
           <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
-            <span className="relative z-10 bg-background px-2 text-muted-foreground">
+            {/* <span className="relative z-10 bg-background px-2 text-muted-foreground">
               ou
-            </span>
+            </span> */}
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <Button
@@ -97,10 +97,10 @@ export function LoginForm({
           </div>
         </div>
       </form>
-      <div className="*:[a]:hover:text-primary *:[a]:underline *:[a]:underline-offset-4 text-balance text-center text-xs text-muted-foreground">
+      {/* <div className="*:[a]:hover:text-primary *:[a]:underline *:[a]:underline-offset-4 text-balance text-center text-xs text-muted-foreground">
         By clicking continue, you agree to our <a href="#">Terms of Service</a>
         and <a href="#">Privacy Policy</a>.
-      </div>
+      </div> */}
     </div>
   );
 }
