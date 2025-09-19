@@ -86,7 +86,7 @@ const CartItem = ({ product }: CartItemProps) => {
             />
           ) : (
             // Placeholder caso não haja imagem
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-300">
+            <div className="flex h-12 w-12 items-center justify-center  bg-gray-300">
               <span className="text-xs font-semibold text-gray-700">
                 {product.name
                   .split(" ")
