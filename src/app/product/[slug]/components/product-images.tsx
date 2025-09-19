@@ -13,20 +13,38 @@ const ProductImages = ({
   imageArrayBytes,
   name,
 }: ProductImagesProps) => {
-  // Função para converter bytes em Data URL para exibição
+  // Função corrigida para converter bytes em Data URL
   const bytesToDataUrl = (bytes: Buffer): string => {
-    const uint8Array = new Uint8Array(bytes);
-    const base64 = btoa(
-      String.fromCharCode(...(uint8Array as unknown as number[])),
-    );
-    return `data:image/jpeg;base64,${base64}`;
+    try {
+      const uint8Array = new Uint8Array(bytes);
+
+      // Método mais eficiente para arrays grandes
+      let binaryString = "";
+      const chunkSize = 8192; // Processar em chunks para evitar stack overflow
+
+      for (let i = 0; i < uint8Array.length; i += chunkSize) {
+        const chunk = uint8Array.slice(i, i + chunkSize);
+        binaryString += String.fromCharCode.apply(null, Array.from(chunk));
+      }
+
+      const base64 = btoa(binaryString);
+      return `data:image/jpeg;base64,${base64}`;
+    } catch (error) {
+      console.error("Erro ao converter bytes para DataURL:", error);
+      return ""; // Retorna string vazia em caso de erro
+    }
   };
 
   // Memoizar as imagens finais para usar
   const finalImages = useMemo(() => {
     // Priorizar bytes sobre URLs
     if (imageArrayBytes && imageArrayBytes.length > 0) {
-      return imageArrayBytes.map((bytes) => bytesToDataUrl(bytes));
+      return imageArrayBytes
+        .map((bytes) => {
+          const dataUrl = bytesToDataUrl(bytes);
+          return dataUrl !== "" ? dataUrl : null; // Filtrar conversões com erro
+        })
+        .filter((url): url is string => url !== null); // Remove nulls
     }
 
     // Se não há bytes, usar URLs
@@ -85,6 +103,9 @@ const ProductImages = ({
             objectFit: "contain",
           }}
           priority={true}
+          onError={(e) => {
+            console.error("Erro ao carregar imagem:", e);
+          }}
         />
       </div>
 
@@ -93,7 +114,7 @@ const ProductImages = ({
         <div className="mt-8 grid grid-cols-4 gap-4 px-5">
           {finalImages.map((imageUrl, index) => (
             <button
-              key={`${imageUrl}-${index}`}
+              key={`${index}`} // Usar índice como key é mais seguro
               className={`flex h-[100px] items-center justify-center rounded-lg bg-accent transition-all
                           ${
                             imageUrl === currentImage
@@ -110,6 +131,9 @@ const ProductImages = ({
                 width={0}
                 sizes="100vw"
                 className="h-auto max-h-[70%] w-auto max-w-[80%] object-contain"
+                onError={(e) => {
+                  console.error(`Erro ao carregar thumbnail ${index}:`, e);
+                }}
               />
             </button>
           ))}

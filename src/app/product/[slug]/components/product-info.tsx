@@ -78,7 +78,7 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
         </Button>
       </div>
 
-      <div className="flex flex-col gap-3">
+      <div className="mt-4 flex flex-col gap-3">
         <h3 className="font-bold">Descrição</h3>
         <p className="text-justify text-sm opacity-60">{product.description}</p>
       </div>

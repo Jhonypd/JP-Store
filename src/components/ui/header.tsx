@@ -119,7 +119,7 @@ const Header = () => {
               </Link>
             </SheetClose>
 
-            <SheetClose asChild>
+            {/* <SheetClose asChild>
               <Link href="/admin">
                 <Button
                   variant="outline"
@@ -129,7 +129,7 @@ const Header = () => {
                   Minha Loja
                 </Button>
               </Link>
-            </SheetClose>
+            </SheetClose> */}
 
             <div className="mt-4 flex flex-col gap-2">
               {status === "unauthenticated" && (

@@ -53,20 +53,38 @@ const ProductItem = ({
     description: product.description || "",
   });
 
-  // Função para converter bytes em Data URL para exibição
+  // Função corrigida para converter bytes em Data URL
   const bytesToDataUrl = (bytes: Buffer | Uint8Array): string => {
-    const uint8Array = new Uint8Array(bytes);
-    const base64 = btoa(
-      String.fromCharCode(...(uint8Array as unknown as number[])),
-    );
-    return `data:image/jpeg;base64,${base64}`;
+    try {
+      const uint8Array = new Uint8Array(bytes);
+
+      // Método mais eficiente para arrays grandes
+      let binaryString = "";
+      const chunkSize = 8192; // Processar em chunks para evitar stack overflow
+
+      for (let i = 0; i < uint8Array.length; i += chunkSize) {
+        const chunk = uint8Array.slice(i, i + chunkSize);
+        binaryString += String.fromCharCode.apply(null, Array.from(chunk));
+      }
+
+      const base64 = btoa(binaryString);
+      return `data:image/jpeg;base64,${base64}`;
+    } catch (error) {
+      console.error("Erro ao converter bytes para DataURL:", error);
+      return ""; // Retorna string vazia em caso de erro
+    }
   };
 
   // Definir a fonte da imagem atual na inicialização
   useEffect(() => {
     if (product.imageArrayBytes && product.imageArrayBytes.length > 0) {
       // Se tem imagem em bytes, usar ela
-      setCurrentImageSrc(bytesToDataUrl(product.imageArrayBytes[0]));
+      const dataUrl = bytesToDataUrl(product.imageArrayBytes[0]);
+      if (dataUrl !== "") {
+        setCurrentImageSrc(dataUrl);
+      } else {
+        setCurrentImageSrc(null);
+      }
     } else if (product.imageUrls && product.imageUrls.length > 0) {
       // Se não tem bytes mas tem URL, usar URL
       setCurrentImageSrc(product.imageUrls[0]);
@@ -113,12 +131,14 @@ const ProductItem = ({
       const reader = new FileReader();
       reader.onload = (e) => {
         const result = e.target?.result as string;
-        newPreviewImages[index] = result;
-        processedCount++;
+        if (result) {
+          newPreviewImages[index] = result;
+          processedCount++;
 
-        if (processedCount === validFiles.length * 2) {
-          setPreviewImages((prev) => [...prev, ...newPreviewImages]);
-          setImageBytesArray((prev) => [...prev, ...newImageBytesArray]);
+          if (processedCount === validFiles.length * 2) {
+            setPreviewImages((prev) => [...prev, ...newPreviewImages]);
+            setImageBytesArray((prev) => [...prev, ...newImageBytesArray]);
+          }
         }
       };
       reader.readAsDataURL(file);
@@ -127,13 +147,15 @@ const ProductItem = ({
       const bytesReader = new FileReader();
       bytesReader.onload = (e) => {
         const buffer = e.target?.result as ArrayBuffer;
-        const bytes = Array.from(new Uint8Array(buffer));
-        newImageBytesArray[index] = bytes;
-        processedCount++;
+        if (buffer) {
+          const bytes = Array.from(new Uint8Array(buffer));
+          newImageBytesArray[index] = bytes;
+          processedCount++;
 
-        if (processedCount === validFiles.length * 2) {
-          setPreviewImages((prev) => [...prev, ...newPreviewImages]);
-          setImageBytesArray((prev) => [...prev, ...newImageBytesArray]);
+          if (processedCount === validFiles.length * 2) {
+            setPreviewImages((prev) => [...prev, ...newPreviewImages]);
+            setImageBytesArray((prev) => [...prev, ...newImageBytesArray]);
+          }
         }
       };
       bytesReader.readAsArrayBuffer(file);
@@ -191,7 +213,7 @@ const ProductItem = ({
         }
 
         // Atualizar imagem atual se nova imagem foi adicionada
-        if (imageBytesArray.length > 0) {
+        if (imageBytesArray.length > 0 && previewImages.length > 0) {
           setCurrentImageSrc(previewImages[0]);
         }
 
@@ -260,6 +282,10 @@ const ProductItem = ({
               width={0}
               sizes="100vw"
               priority
+              onError={(e) => {
+                console.error("Erro ao carregar imagem principal:", e);
+                setCurrentImageSrc(null);
+              }}
             />
             {product.discountPercentage > 0 && (
               <DiscountBadge
@@ -371,6 +397,12 @@ const ProductItem = ({
                               alt={`Preview ${index + 1}`}
                               fill
                               className="object-contain"
+                              onError={(e) => {
+                                console.error(
+                                  `Erro ao carregar preview ${index}:`,
+                                  e,
+                                );
+                              }}
                             />
                           </div>
                           <Button
@@ -399,6 +431,12 @@ const ProductItem = ({
                           alt={product.name}
                           fill
                           className="rounded-lg object-contain"
+                          onError={(e) => {
+                            console.error(
+                              "Erro ao carregar imagem no upload:",
+                              e,
+                            );
+                          }}
                         />
                         <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-black/40 opacity-0 transition-opacity hover:opacity-100">
                           <div className="flex flex-col items-center text-white">
