@@ -256,8 +256,8 @@ const ProductItem = ({
       >
         {!currentImageSrc ? (
           <div className="flex h-full w-full items-center justify-center">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gray-300">
-              <span className="text-sm font-semibold text-gray-700">
+            <div className="flex h-16 w-16 items-center justify-center  ">
+              <span className="text-xl font-semibold text-gray-700">
                 {product.name
                   .split(" ")
                   .map((word) => word.charAt(0))
