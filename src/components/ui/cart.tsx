@@ -10,16 +10,18 @@ import { Button } from "./button";
 import { createCheckout } from "@/actions/checkout";
 import { loadStripe } from "@stripe/stripe-js";
 import { createOrder } from "@/actions/order";
-import { signIn, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const Cart = () => {
   const { data } = useSession();
+  const router = useRouter();
   const { products, total, subtotal, totalDiscount } = useContext(CartContext);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSignInClick = async () => {
-    await signIn();
+    return router.replace("/login");
   };
 
   const handleFinishedPurchaseClick = async () => {
@@ -46,10 +48,16 @@ const Cart = () => {
         process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY,
       );
 
+      console.log({ stripe });
+      console.log({ checkout });
+      debugger;
+
       stripe?.redirectToCheckout({
         sessionId: checkout.id,
       });
+      debugger;
     } catch (error) {
+      toast.error("Erro ao finalizar compra, tente novamente.");
       console.error(error);
     } finally {
       setIsLoading(false);

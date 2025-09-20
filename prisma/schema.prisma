@@ -7,48 +7,31 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Category {
-  id       String    @id @default(uuid())
-  name     String
-  slug     String
-  imageUrl String
-  products Product[]
-}
-
-model Product {
-  id                 String         @id @default(uuid())
-  name               String
-  slug               String
-  description        String
-  basePrice          Decimal        @db.Decimal(8, 2)
-  imageUrls          String[]
-  categoryId         String
-  discountPercentage Int            @default(0)
-  imageArrayBytes    Bytes[]
-  OrderProduct       OrderProduct[]
-  category           Category       @relation(fields: [categoryId], references: [id])
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  cart          Cart[]
+  orders        Order[]
+  sessions      Session[]
+  userAdm       userAdm[]
 }
 
 model Cart {
-  id       String    @id @default(uuid())
+  id       String     @id @default(uuid())
   userId   String
-  user     User      @relation(fields: [userId], references: [id])
-  UserCart UserCart?
-}
-
-model UserCart {
-  id     String @id @default(uuid())
-  userId String
-  cartId String @unique
-  Cart   Cart   @relation(fields: [cartId], references: [id])
-  user   User   @relation(fields: [userId], references: [id])
+  user     User       @relation(fields: [userId], references: [id])
+  CartItem CartItem[]
 }
 
 model Order {
   id           String         @id @default(uuid())
   userId       String
   createdAt    DateTime       @default(now())
-  upadtedAt    DateTime       @default(now()) @updatedAt
+  updatedAt    DateTime       @default(now())
   status       OrderStatus    @default(WAITTING_FOR_PAYMENT)
   user         User           @relation(fields: [userId], references: [id])
   orderProduct OrderProduct[]
@@ -63,6 +46,29 @@ model OrderProduct {
   quantity           Int
   order              Order   @relation(fields: [orderId], references: [id])
   product            Product @relation(fields: [productId], references: [id])
+}
+
+model Product {
+  id                 String         @id @default(uuid())
+  name               String
+  slug               String
+  description        String
+  basePrice          Decimal        @db.Decimal(8, 2)
+  imageUrls          String[]
+  categoryId         String
+  discountPercentage Int            @default(0)
+  imageArrayBytes    Bytes[]
+  CartItem           CartItem[]
+  orderProduct       OrderProduct[]
+  category           Category       @relation(fields: [categoryId], references: [id])
+}
+
+model Category {
+  id       String    @id @default(uuid())
+  name     String
+  slug     String
+  imageUrl String
+  products Product[]
 }
 
 model Account {
@@ -91,33 +97,29 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model User {
-  id            String     @id @default(cuid())
-  name          String?
-  email         String?    @unique
-  emailVerified DateTime?
-  image         String?
-  accounts      Account[]
-  Cart          Cart[]
-  Order         Order[]
-  sessions      Session[]
-  UserCart      UserCart[]
-  userAdm       userAdm[]
-}
-
 model VerificationToken {
   identifier String
   token      String   @unique
   expires    DateTime
 
   @@unique([identifier, token])
+  @@unique([identifier, token], map: "idx_verificationtoken_identifier_token")
 }
 
 model userAdm {
   id         String @id @default(cuid())
   permission String
   userId     String
-  user       User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user       User   @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_useradm_user")
+}
+
+model CartItem {
+  id         String  @id
+  cart_id    String
+  product_id String
+  quantity   Int?    @default(1)
+  Cart       Cart    @relation(fields: [cart_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_cartitem_cart")
+  Product    Product @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_cartitem_product")
 }
 
 enum OrderStatus {

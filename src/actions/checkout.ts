@@ -32,7 +32,8 @@ export const createCheckout = async (
       };
     }),
   });
-
+  console.log(checkout);
+  debugger;
   // retorna checkout
   return checkout;
 };

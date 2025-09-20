@@ -287,7 +287,7 @@ const ProductItem = ({
                 setCurrentImageSrc(null);
               }}
             />
-            {product.discountPercentage > 0 && (
+            {/* {product.discountPercentage > 0 && (
               <DiscountBadge
                 className={cn(
                   "absolute",
@@ -296,10 +296,19 @@ const ProductItem = ({
               >
                 {product.discountPercentage}
               </DiscountBadge>
-            )}
+            )} */}
           </>
         )}
-
+        {product.discountPercentage > 0 && (
+          <DiscountBadge
+            className={cn(
+              "absolute",
+              layout === "vertical" ? "right-2 top-2" : "right-1 top-1",
+            )}
+          >
+            {product.discountPercentage}
+          </DiscountBadge>
+        )}
         {/* Botão de edição */}
         {editable && (
           <Button

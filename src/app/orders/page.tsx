@@ -40,8 +40,8 @@ async function OrderPage() {
     },
   });
 
-  console.log(orders);
-  console.log(session.user);
+  // console.log(orders);
+  // console.log(session.user);
 
   if (!orders) {
     return <Loading />;

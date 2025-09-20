@@ -1,3 +1,4 @@
+import { CATEGORY_ICON_CATALOG } from "@/constants/category-icons";
 import { Category } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
@@ -10,7 +11,7 @@ const CategoryItem = ({ category }: CategoryItemProps) => {
     <Link href={`/category/${category.slug}`}>
       <div className="flex flex-col">
         <div className=" flex h-[150px] w-full items-center justify-center rounded-tl-lg rounded-tr-lg bg-gradient-to-r from-[rgba(50,190,55,100)] to-[rgba(27,86,30,100)]">
-          <Image
+          {/* <Image
             src={category.imageUrl}
             alt={category.name}
             width={0}
@@ -20,7 +21,12 @@ const CategoryItem = ({ category }: CategoryItemProps) => {
             style={{
               objectFit: "contain",
             }}
-          />
+          /> */}
+          {
+            CATEGORY_ICON_CATALOG[
+              category.slug as keyof typeof CATEGORY_ICON_CATALOG
+            ]
+          }
         </div>
         <div className="rounded-bl-lg rounded-br-lg bg-accent py-3">
           <p className="text-center text-sm font-semibold">{category.name}</p>

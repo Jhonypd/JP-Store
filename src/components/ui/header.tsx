@@ -27,16 +27,25 @@ import Link from "next/link";
 import Cart from "./cart";
 import CounterItemBadge from "./count-item-badge";
 import { CartContext } from "@/providers/cart";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 
 const Header = () => {
   const { status, data } = useSession();
-
+  const pathRouter = usePathname();
   const { products } = useContext(CartContext);
+  const [openCart, setOpenCart] = useState(false);
+  const isLoginPage = pathRouter === "/login";
 
   const handleLogoutClick = async () => {
     await signOut();
   };
+
+  useEffect(() => {
+    if (isLoginPage) {
+      setOpenCart(false);
+    }
+  }, [isLoginPage]);
 
   return (
     <Card className="flex items-center justify-between p-[1.875rem]">
@@ -136,7 +145,6 @@ const Header = () => {
                 <SheetClose asChild>
                   <Link href={"/login"}>
                     <Button
-                      // onClick={handleLoginClick}
                       variant="outline"
                       className="w-full justify-start gap-2"
                     >
@@ -167,7 +175,7 @@ const Header = () => {
         </h1>
       </Link>
 
-      <Sheet>
+      <Sheet open={openCart} onOpenChange={setOpenCart}>
         <SheetTrigger asChild>
           <Button size="icon" variant="outline">
             {products.length > 0 && (
@@ -178,7 +186,6 @@ const Header = () => {
             <ShoppingCartIcon />
           </Button>
         </SheetTrigger>
-
         <SheetContent>
           <Cart />
         </SheetContent>

@@ -7,7 +7,7 @@ const DiscountBadge = ({ children, className, ...props }: BadgeProps) => {
     <Badge
       {...props}
       className={twMerge(
-        "bg-secondary px-2 py-[2px] hover:bg-secondary",
+        "bg-secondary px-2 py-[2px] font-bold hover:bg-secondary",
         className,
       )}
     >
