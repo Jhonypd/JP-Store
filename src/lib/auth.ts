@@ -18,8 +18,6 @@ export const authOptions: AuthOptions = {
         email: { label: "Email", type: "text" },
       },
       async authorize(credentials) {
-        console.log(credentials);
-
         if (!credentials?.email) {
           throw new Error("No credentials provided");
         }
@@ -48,14 +46,11 @@ export const authOptions: AuthOptions = {
   ],
   callbacks: {
     async session({ session, token, user }) {
-      console.log(user);
-      console.log(token);
       session.user = { ...session.user, id: user.id } as {
         id: string;
         name: string;
         email: string;
       };
-      console.log(session);
       return session;
     },
   },

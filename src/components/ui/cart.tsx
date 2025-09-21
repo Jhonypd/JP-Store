@@ -19,7 +19,7 @@ const Cart = () => {
   const router = useRouter();
   const { products, total, subtotal, totalDiscount } = useContext(CartContext);
   const [isLoading, setIsLoading] = useState(false);
-
+  console.log("no cart", products);
   const handleSignInClick = async () => {
     return router.replace("/login");
   };
@@ -79,10 +79,7 @@ const Cart = () => {
           <div className="flex h-full flex-col gap-y-8 ">
             {products.length > 0 ? (
               products.map((product) => (
-                <CartItem
-                  key={product.id}
-                  product={computeProductTotalPrice(product as any) as any}
-                />
+                <CartItem key={product.id} product={product} />
               ))
             ) : (
               <p className="text-center font-semibold">

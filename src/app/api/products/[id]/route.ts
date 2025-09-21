@@ -15,8 +15,6 @@ interface UpdateProductData {
 // Função para redimensionar corretamente
 async function processImageWithSharp(buffer: Buffer): Promise<Buffer> {
   try {
-    console.log("Redimensionando imagem...");
-
     return await sharp(buffer)
       .resize(800, 800, {
         fit: "contain",
@@ -33,14 +31,11 @@ async function processImageWithSharp(buffer: Buffer): Promise<Buffer> {
 // Função para remover/pintar fundo branco
 async function removeWhiteBackground(buffer: Buffer): Promise<Buffer> {
   try {
-    console.log("Removendo fundo branco...");
-
     const { data, info } = await sharp(buffer)
       .raw()
       .toBuffer({ resolveWithObject: true });
 
     const { width, height, channels } = info;
-    console.log(`Processando ${width}x${height} com ${channels} canais`);
 
     let pixelsModificados = 0;
 
@@ -59,10 +54,7 @@ async function removeWhiteBackground(buffer: Buffer): Promise<Buffer> {
       }
     }
 
-    console.log(`${pixelsModificados} pixels brancos pintados de preto`);
-
     if (pixelsModificados === 0) {
-      console.log("Nenhum pixel branco encontrado");
       return buffer;
     }
 
@@ -89,14 +81,8 @@ export async function PATCH(
     const updateData: any = { ...otherData };
 
     if (imageBytesArray && imageBytesArray.length > 0) {
-      console.log(`Processando ${imageBytesArray.length} imagens...`);
-
       const processedImages = await Promise.all(
         imageBytesArray.map(async (bytes, index) => {
-          console.log(
-            `Processando imagem ${index + 1}/${imageBytesArray.length}`,
-          );
-
           const originalBuffer = Buffer.from(bytes);
 
           // 1. Redimensionar primeiro
@@ -105,14 +91,12 @@ export async function PATCH(
           // 2. Remover/pintar fundo branco
           const finalBuffer = await removeWhiteBackground(resizedBuffer);
 
-          console.log(`Imagem ${index + 1} concluída`);
           return finalBuffer;
         }),
       );
 
       updateData.imageUrls = [];
       updateData.imageArrayBytes = processedImages;
-      console.log("Todas as imagens processadas!");
     }
 
     const updatedProduct = await prisma.product.update({

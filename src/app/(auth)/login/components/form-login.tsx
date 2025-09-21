@@ -7,6 +7,7 @@ import Image from "next/image";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React from "react";
+import { toast } from "sonner";
 
 export function LoginForm({
   className,
@@ -41,7 +42,7 @@ export function LoginForm({
     if (res?.ok) {
       route.replace("/");
     } else if (res?.error) {
-      alert("Login falhou: " + res.error);
+      toast.error("Login falhou: " + res.error);
     }
   };
 

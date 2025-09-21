@@ -18,34 +18,29 @@ const ProductDetailsPage = async ({
     where: {
       slug: slug,
     },
-    include: {
-      category: {
-        include: {
-          products: {
-            where: {
-              slug: {
-                not: slug,
-              },
-            },
-          },
-        },
-      },
-    },
   });
 
   if (!product) return null;
+
+  const recommendedProducts = await prismaClient.category.findFirst({
+    where: {
+      id: product?.categoryId,
+    },
+    select: {
+      products: { where: { id: { not: product?.id } }, take: 10 },
+    },
+  });
 
   return (
     <div className="flex flex-col gap-8">
       <ProductImages
         name={product.name}
-        imagesUrls={product.imageUrls}
-        imageArrayBytes={product.imageArrayBytes as any}
+        imageArrayBytes={product.imageArrayBytes}
       />
       <ProductInfo product={computeProductTotalPrice(product)} />
       <div>
         <SectionTitle>Produtos Recomendados</SectionTitle>
-        <ProductList products={product.category.products} />
+        <ProductList products={recommendedProducts?.products ?? []} />
       </div>
     </div>
   );

@@ -8,10 +8,11 @@ import { ArrowLeft, ArrowRight, TruckIcon, Check } from "lucide-react";
 import { useContext, useState } from "react";
 
 interface ProductInfoProps {
-  product: ProductWithTotalPrice;
+  product: Omit<ProductWithTotalPrice, "image" | "imagesUrls">;
 }
 
 const ProductInfo = ({ product }: ProductInfoProps) => {
+  console.log("em productInfo:", product);
   const [quantity, setQuantity] = useState(1);
 
   const { addProductToCart } = useContext(CartContext);
@@ -26,13 +27,14 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
 
   const handleAddToCartClick = async () => {
     try {
-      addProductToCart({ ...product, quantity });
+      await addProductToCart({ ...product, quantity });
 
       toast("Item adicionado com sucesso!", {
         description: `${product.name} adicionado.`,
       });
     } catch (error) {
       console.error(error);
+      toast.error("Erro inesperado ao adicionar item ao carrinho.");
     }
   };
 
