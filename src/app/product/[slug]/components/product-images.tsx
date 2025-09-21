@@ -1,7 +1,6 @@
 "use client";
-import Image from "next/image";
 import { useState, useEffect, useMemo } from "react";
-import { resolveProductImages } from "@/helpers/images";
+import ImageProduct from "@/components/ui/image-product";
 
 interface ProductImagesProps {
   name: string;
@@ -9,24 +8,42 @@ interface ProductImagesProps {
 }
 
 const ProductImages = ({ imageArrayBytes, name }: ProductImagesProps) => {
-  const finalImages = useMemo(
-    () => resolveProductImages(imageArrayBytes),
-    [imageArrayBytes],
-  );
+  // Filtra e valida as imagens antes de usar
+  const validImages = useMemo(() => {
+    if (!imageArrayBytes || imageArrayBytes.length === 0) {
+      return [];
+    }
 
-  const [currentImage, setCurrentImage] = useState<string>("");
+    return imageArrayBytes.filter((imageBytes) => {
+      // Verifica se não é null, undefined ou array vazio
+      if (!imageBytes) return false;
+
+      if (Array.isArray(imageBytes)) {
+        return imageBytes.length > 0;
+      }
+
+      if (imageBytes instanceof Buffer || imageBytes instanceof Uint8Array) {
+        return imageBytes.length > 0;
+      }
+
+      return false;
+    });
+  }, [imageArrayBytes]);
+
+  const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
 
   useEffect(() => {
-    if (finalImages.length > 0) {
-      setCurrentImage(finalImages[0]);
+    if (validImages.length > 0) {
+      setCurrentImageIndex(0);
     }
-  }, [finalImages]);
+  }, [validImages]);
 
-  const handleImageClick = (imageUrl: string) => {
-    setCurrentImage(imageUrl);
+  const handleImageClick = (index: number) => {
+    setCurrentImageIndex(index);
   };
 
-  if (finalImages.length === 0) {
+  // Se não há imagens válidas, mostrar placeholder
+  if (validImages.length === 0) {
     return (
       <div className="flex flex-col">
         <div className="flex h-[380px] w-full items-center justify-center bg-accent">
@@ -47,41 +64,39 @@ const ProductImages = ({ imageArrayBytes, name }: ProductImagesProps) => {
 
   return (
     <div className="flex flex-col">
+      {/* Imagem Principal */}
       <div className="flex h-[380px] w-full items-center justify-center bg-accent">
-        <Image
-          src={currentImage}
-          alt={name}
-          height={0}
-          width={0}
-          sizes="100vw"
+        <ImageProduct
+          imageBytes={validImages[currentImageIndex]}
+          productName={name}
           className="mx-auto h-auto max-h-[80%] w-auto max-w-[70%] md:w-[500px]"
-          style={{ objectFit: "contain" }}
           priority={true}
+          onError={() => {
+            console.error("Erro ao carregar imagem principal:", name);
+          }}
         />
       </div>
 
-      {finalImages.length > 1 && (
+      {/* Thumbnails - só mostra se há mais de uma imagem */}
+      {validImages.length > 1 && (
         <div className="mt-8 grid grid-cols-4 gap-4 px-5">
-          {finalImages.map((imageUrl, index) => (
+          {validImages.map((imageBytes, index) => (
             <button
               key={index}
               className={`flex h-[100px] items-center justify-center rounded-lg bg-accent transition-all
                           ${
-                            imageUrl === currentImage
+                            index === currentImageIndex
                               ? "border-2 border-solid border-primary ring-2 ring-primary/20"
                               : "border-2 border-transparent hover:border-primary/50"
                           }`}
-              onClick={() => handleImageClick(imageUrl)}
+              onClick={() => handleImageClick(index)}
             >
-              <Image
-                src={imageUrl}
-                alt={`${name} - Imagem ${index + 1}`}
-                height={0}
-                width={0}
-                sizes="100vw"
-                className="h-auto max-h-[70%] w-auto max-w-[80%] object-contain"
-                onError={(e) => {
-                  console.error(`Erro ao carregar thumbnail ${index}:`, e);
+              <ImageProduct
+                imageBytes={imageBytes}
+                productName={`${name} - Thumbnail ${index + 1}`}
+                className="h-auto max-h-[70%] w-auto max-w-[80%]"
+                onError={() => {
+                  console.error(`Erro ao carregar thumbnail ${index}:`, name);
                 }}
               />
             </button>

@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { bytesToDataUrl } from "@/helpers/images";
 
@@ -25,8 +25,16 @@ const ImageProduct = ({
   // Usa sua função helper que já retorna blob URL
   const blobUrl = useMemo(() => {
     if (!imageBytes || imageError) return null;
-    return bytesToDataUrl(imageBytes);
-  }, [imageBytes, imageError]);
+
+    try {
+      const url = bytesToDataUrl(imageBytes);
+
+      return url;
+    } catch (error) {
+      console.error(`Erro ao gerar blob URL para ${productName}:`, error);
+      return null;
+    }
+  }, [imageBytes, imageError, productName]);
 
   const handleImageError = () => {
     setImageError(true);

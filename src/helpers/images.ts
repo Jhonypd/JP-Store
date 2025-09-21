@@ -1,3 +1,5 @@
+// helpers/images.ts - Versão melhorada
+
 // Array para armazenar URLs criadas, para poder limpar depois
 const createdBlobUrls = new Set<string>();
 
@@ -52,10 +54,6 @@ export const getFirstImageBytes = (
       }
     }
 
-    console.error(
-      "Formato de imageArrayBytes não reconhecido:",
-      typeof imageArrayBytes,
-    );
     return null;
   } catch (error) {
     console.error("Erro ao processar imageArrayBytes:", error);
@@ -63,21 +61,102 @@ export const getFirstImageBytes = (
   }
 };
 
-export function bytesToDataUrl(bytes: any, type = "image/webp"): string {
+// Detecta o tipo MIME da imagem pelos magic bytes
+function detectImageType(uint8Array: Uint8Array): string {
+  if (uint8Array.length < 4) return "image/jpeg"; // fallback
+
+  // PNG: 89 50 4E 47
+  if (
+    uint8Array[0] === 0x89 &&
+    uint8Array[1] === 0x50 &&
+    uint8Array[2] === 0x4e &&
+    uint8Array[3] === 0x47
+  ) {
+    return "image/png";
+  }
+
+  // JPEG: FF D8 FF
+  if (
+    uint8Array[0] === 0xff &&
+    uint8Array[1] === 0xd8 &&
+    uint8Array[2] === 0xff
+  ) {
+    return "image/jpeg";
+  }
+
+  // WebP: 52 49 46 46 (RIFF) ... 57 45 42 50 (WEBP)
+  if (
+    uint8Array[0] === 0x52 &&
+    uint8Array[1] === 0x49 &&
+    uint8Array[2] === 0x46 &&
+    uint8Array[3] === 0x46 &&
+    uint8Array.length > 12 &&
+    uint8Array[8] === 0x57 &&
+    uint8Array[9] === 0x45 &&
+    uint8Array[10] === 0x42 &&
+    uint8Array[11] === 0x50
+  ) {
+    return "image/webp";
+  }
+
+  // GIF: 47 49 46 38
+  if (
+    uint8Array[0] === 0x47 &&
+    uint8Array[1] === 0x49 &&
+    uint8Array[2] === 0x46 &&
+    uint8Array[3] === 0x38
+  ) {
+    return "image/gif";
+  }
+
+  return "image/jpeg"; // fallback para JPEG
+}
+
+// Valida se os bytes realmente representam uma imagem
+function validateImageBytes(uint8Array: Uint8Array): boolean {
+  if (!uint8Array || uint8Array.length === 0) {
+    return false;
+  }
+
+  if (uint8Array.length < 10) {
+    return false;
+  }
+
+  // Verifica se não é só zeros
+  const hasContent = uint8Array.some((byte) => byte !== 0);
+  if (!hasContent) {
+    return false;
+  }
+
+  return true;
+}
+
+export function bytesToDataUrl(bytes: any, type?: string): string {
   try {
     let uint8Array: Uint8Array;
 
+    // Converter para Uint8Array
     if (bytes instanceof Uint8Array) {
       uint8Array = bytes;
     } else if (Array.isArray(bytes)) {
       uint8Array = new Uint8Array(bytes);
     } else if (bytes?.type === "Buffer" && Array.isArray(bytes.data)) {
       uint8Array = new Uint8Array(bytes.data);
+    } else if (bytes instanceof Buffer) {
+      uint8Array = new Uint8Array(bytes);
     } else {
-      throw new Error("Formato de bytes inválido");
+      return "";
     }
 
-    const blob = new Blob([uint8Array as any], { type });
+    // Validar os dados
+    if (!validateImageBytes(uint8Array)) {
+      return "";
+    }
+
+    // Detectar tipo automaticamente se não fornecido
+    const mimeType = type || detectImageType(uint8Array);
+
+    const blob = new Blob([uint8Array as any], { type: mimeType });
     const url = URL.createObjectURL(blob);
 
     // Armazena a URL para limpeza futura
@@ -93,7 +172,7 @@ export function bytesToDataUrl(bytes: any, type = "image/webp"): string {
 export function resolveProductImages(
   imageArrayBytes?: any[],
   imagesUrls?: string[],
-  type = "image/webp",
+  type?: string,
 ): string[] {
   if (imageArrayBytes && imageArrayBytes.length > 0) {
     return imageArrayBytes

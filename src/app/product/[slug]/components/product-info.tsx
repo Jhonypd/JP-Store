@@ -12,7 +12,7 @@ interface ProductInfoProps {
 }
 
 const ProductInfo = ({ product }: ProductInfoProps) => {
-  console.log("em productInfo:", product);
+  // console.log("em productInfo:", product);
   const [quantity, setQuantity] = useState(1);
 
   const { addProductToCart } = useContext(CartContext);
