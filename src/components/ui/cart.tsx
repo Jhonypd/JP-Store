@@ -1,9 +1,8 @@
 import { ShoppingCartIcon, Loader2 } from "lucide-react";
 import { Badge } from "./badge";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { CartContext } from "@/providers/cart";
 import CartItem from "./cart-item";
-import { computeProductTotalPrice } from "@/helpers/products";
 import { Separator } from "./separator";
 import { ScrollArea } from "./scroll-area";
 import { Button } from "./button";
@@ -17,12 +16,19 @@ import { useRouter } from "next/navigation";
 const Cart = () => {
   const { data } = useSession();
   const router = useRouter();
-  const { products, total, subtotal, totalDiscount } = useContext(CartContext);
+  const { products, errorCart, total, subtotal, totalDiscount, reloadCart } =
+    useContext(CartContext);
   const [isLoading, setIsLoading] = useState(false);
   console.log("no cart", products);
   const handleSignInClick = async () => {
     return router.replace("/login");
   };
+
+  useEffect(() => {
+    if (errorCart) {
+      toast.error(errorCart);
+    }
+  }, [errorCart]);
 
   const handleFinishedPurchaseClick = async () => {
     try {
@@ -76,17 +82,21 @@ const Cart = () => {
 
       <div className="flex h-full max-h-full flex-col gap-5 overflow-hidden">
         <ScrollArea className="h-full">
-          <div className="flex h-full flex-col gap-y-8 ">
-            {products.length > 0 ? (
-              products.map((product) => (
-                <CartItem key={product.id} product={product} />
-              ))
-            ) : (
-              <p className="text-center font-semibold">
-                Seu carrinho está vazio!
-              </p>
-            )}
-          </div>
+          {errorCart ? (
+            <Button onClick={reloadCart}>Tentar novamente</Button>
+          ) : (
+            <div className="flex h-full flex-col gap-y-8 ">
+              {products.length > 0 ? (
+                products.map((product) => (
+                  <CartItem key={product.id} product={product} />
+                ))
+              ) : (
+                <p className="text-center font-semibold">
+                  Seu carrinho está vazio!
+                </p>
+              )}
+            </div>
+          )}
         </ScrollArea>
       </div>
       <div className="flex flex-col gap-3">

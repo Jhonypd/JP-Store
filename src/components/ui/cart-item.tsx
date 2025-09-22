@@ -13,6 +13,7 @@ interface CartItemProps {
 }
 
 const CartItem = ({ product }: CartItemProps) => {
+  console.log(product.imageArrayBytes);
   const {
     decreaseProductQuantity,
     increaseProductQuantity,

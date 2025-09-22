@@ -21,6 +21,8 @@ interface ICartContext {
   increaseProductQuantity: (productId: string) => void;
   removeProductFromCart: (productId: string) => void;
   isLoading: boolean;
+  errorCart: string | null;
+  reloadCart?: () => void;
 }
 
 export const CartContext = createContext<ICartContext>({
@@ -35,20 +37,25 @@ export const CartContext = createContext<ICartContext>({
   decreaseProductQuantity: () => {},
   increaseProductQuantity: () => {},
   removeProductFromCart: () => {},
+  reloadCart: () => {},
   isLoading: false,
+  errorCart: null,
 });
 
 const CartProvider = ({ children }: { children: ReactNode }) => {
   const [products, setProducts] = useState<CartProduct[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const { data: session, status } = useSession();
+  const [error, setError] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
+  const MAX_RETRY_ATTEMPTS = 5;
 
   // ----------------------------
   // LOCAL STORAGE FUNÇÕES
   // ----------------------------
   const loadCartFromLocalStorage = () => {
     if (typeof window !== "undefined") {
-      const savedCart = localStorage.getItem("@fsw-store/cart-products");
+      const savedCart = localStorage.getItem("@jp-store/cart-products");
       if (savedCart) {
         setProducts(JSON.parse(savedCart));
       }
@@ -57,10 +64,7 @@ const CartProvider = ({ children }: { children: ReactNode }) => {
 
   const saveToLocalStorage = (products: CartProduct[]) => {
     if (typeof window !== "undefined") {
-      localStorage.setItem(
-        "@fsw-store/cart-products",
-        JSON.stringify(products),
-      );
+      localStorage.setItem("@jp-store/cart-products", JSON.stringify(products));
     }
   };
 
@@ -76,12 +80,34 @@ const CartProvider = ({ children }: { children: ReactNode }) => {
       if (response.ok) {
         const cartData = await response.json();
         setProducts(cartData.products || []);
+        // Reset contador em caso de sucesso
+        setRetryCount(0);
+        setError(null);
       }
     } catch (error) {
+      setError("Erro ao carregar carrinho");
       console.error("Erro ao carregar carrinho:", error);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // ----------------------------
+  // RELOAD CART
+  // ----------------------------
+
+  const reloadCart = async () => {
+    // Verifica se já atingiu o limite de tentativas
+    if (retryCount >= MAX_RETRY_ATTEMPTS) {
+      setError(`Erro ao carregar carrinho, tente novamente mais tarde`);
+      return;
+    }
+
+    // Incrementa contador antes da tentativa
+    setRetryCount((prev) => prev + 1);
+
+    // Faz a chamada
+    await loadCartFromDatabase();
   };
 
   // ----------------------------
@@ -91,7 +117,7 @@ const CartProvider = ({ children }: { children: ReactNode }) => {
     if (!session?.user?.id) return;
     if (typeof window === "undefined") return;
 
-    const savedCart = localStorage.getItem("@fsw-store/cart-products");
+    const savedCart = localStorage.getItem("@jp-store/cart-products");
     if (!savedCart) return;
 
     try {
@@ -113,7 +139,7 @@ const CartProvider = ({ children }: { children: ReactNode }) => {
       );
 
       // Limpa o localStorage depois da migração
-      localStorage.removeItem("@fsw-store/cart-products");
+      localStorage.removeItem("@jp-store/cart-products");
     } catch (error) {
       console.error("Erro ao migrar carrinho local para o banco:", error);
     }
@@ -373,13 +399,15 @@ const CartProvider = ({ children }: { children: ReactNode }) => {
         decreaseProductQuantity,
         increaseProductQuantity,
         removeProductFromCart,
+        isLoading,
         total,
         subtotal,
         totalDiscount,
         cartTotalPrice: total,
         cartBasePrice: subtotal,
         cartTotalDiscount: totalDiscount,
-        isLoading,
+        errorCart: error,
+        reloadCart,
       }}
     >
       {children}
